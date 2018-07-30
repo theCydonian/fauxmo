@@ -384,8 +384,7 @@ class rest_api_handler(object):
 # list will be used.
 
 FAUXMOS = [
-    ['office lights', rest_api_handler('http://192.168.5.4/ha-api?cmd=on&a=office', 'http://192.168.5.4/ha-api?cmd=off&a=office')],
-    ['kitchen lights', rest_api_handler('http://192.168.5.4/ha-api?cmd=on&a=kitchen', 'http://192.168.5.4/ha-api?cmd=off&a=kitchen')],
+    ['Smart Candle', rest_api_handler('localhost:5200/ha-api?cmd=on&a=office', 'localhost:5300/ha-api?cmd=off&a=office')]
 ]
 
 
