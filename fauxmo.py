@@ -33,6 +33,11 @@ import uuid
 import RPi.GPIO as GPIO
 import asyncio
 
+async def onoff(pin):
+    GPIO.output(pin, 1)
+    sleep(5)
+    GPIO.output(pin, 0)
+    return True
 
 
 # This XML is the minimum needed to define one of our virtual switches
@@ -389,13 +394,7 @@ class gpio_handler(object):
 
     def on(self):
         print(self.pin, "ON")
-        asyncio.run(onoff())
-        return True
-
-    async def onoff(self):
-        GPIO.output(self.pin, 1)
-        sleep(5)
-        GPIO.output(self.pin, 0)
+        asyncio.run(onoff(self.pin_number))
         return True
 
     def off(self):
