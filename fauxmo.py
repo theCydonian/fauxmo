@@ -33,7 +33,7 @@ import uuid
 import RPi.GPIO as GPIO
 import asyncio
 
-Use GPIO.setwarnings(False)
+GPIO.setwarnings(False)
 
 @asyncio.coroutine
 def onoff(pin):
