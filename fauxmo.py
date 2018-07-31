@@ -389,7 +389,7 @@ class gpio_handler(object):
 
     def on(self):
         print(self.pin, "ON")
-        onoff()
+        asyncio.run(onoff())
         return True
 
     async def onoff(self):
