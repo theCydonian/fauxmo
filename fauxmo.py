@@ -457,6 +457,10 @@ while True:
         # Allow time for a ctrl-c to stop the process
         p.poll(100)
         time.sleep(0.1)
+    except KeyboardInterrupt:
+        GPIO.cleanup()
+        dbg(e)
+        break
     except Exception as e:
         GPIO.cleanup()
         dbg(e)
