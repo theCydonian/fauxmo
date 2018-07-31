@@ -1,20 +1,15 @@
 #!/usr/bin/env python
-
 """
 The MIT License (MIT)
-
 Copyright (c) 2015 Maker Musings
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,8 +30,7 @@ import sys
 import time
 import urllib
 import uuid
-from gpiozero import LED
-from time import sleep
+import RPi.GPIO as GPIO
 
 
 
@@ -361,20 +355,46 @@ class upnp_broadcast_responder(object):
 # This example class takes two full URLs that should be requested when an on
 # and off command are invoked respectively. It ignores any return data.
 
-class gpio_handler(object):
-    def __init__(self, gpioHeader):
-        led = LED(gpioHeader)
+class rest_api_handler(object):
+    def __init__(self, on_cmd, off_cmd):
+        self.on_cmd = on_cmd
+        self.off_cmd = off_cmd
 
     def on(self):
-        led.on()
-        sleep(5)
-        led.off()
+        r = requests.get(self.on_cmd)
+        return r.status_code == 200
 
     def off(self):
-        led.on()
-        sleep(5)
-        led.off()
+        r = requests.get(self.off_cmd)
+        return r.status_code == 200
 
+class dummy_handler(object):
+    def __init__(self, name):
+        self.name = name
+
+    def on(self):
+        print(self.name, "ON")
+        return True
+
+    def off(self):
+        print(self.name, "OFF")
+        return True
+
+class gpio_handler(object):
+    def __init__(self, pin_number):
+        self.pin = pin_number
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(pin_number, GPIO.OUT)
+
+    def on(self):
+        print(self.pin, "ON")
+        GPIO.output(self.pin, 0)
+        return True
+
+    def off(self):
+        print(self.pin, "OFF")
+        GPIO.output(self.pin, 1)
+        return True
 
 # Each entry is a list with the following elements:
 #
@@ -386,10 +406,20 @@ class gpio_handler(object):
 # 16 switches it can control. Only the first 16 elements of the FAUXMOS
 # list will be used.
 
-FAUXMOS = [
-    ['Smart Candle', gpio_handler(4)]
-]
+# FAUXMOS = [
+#     ['office lights', rest_api_handler('http://192.168.5.4/ha-api?cmd=on&a=office', 'http://192.168.5.4/ha-api?cmd=off&a=office')],
+#     ['kitchen lights', rest_api_handler('http://192.168.5.4/ha-api?cmd=on&a=kitchen', 'http://192.168.5.4/ha-api?cmd=off&a=kitchen')],
+# ]
 
+FAUXMOS = [
+        ['office lights', gpio_handler(35)],
+        ['kitchen lights', gpio_handler(37)],
+    ]
+
+# FAUXMOS = [
+#         ['office lights', dummy_handler("officelight")],
+#         ['kitchen lights', dummy_handler("kitchenlight")],
+#     ]
 
 if len(sys.argv) > 1 and sys.argv[1] == '-d':
     DEBUG = True
@@ -420,6 +450,6 @@ while True:
         p.poll(100)
         time.sleep(0.1)
     except Exception, e:
+        GPIO.cleanup()
         dbg(e)
         break
-
