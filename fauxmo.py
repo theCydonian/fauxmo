@@ -102,7 +102,7 @@ class poller:
         else:
             ready = []
             if len(self.targets) > 0:
-                (rlist, wlist, xlist) = select.select(self.targets.keys(), [], [], timeout)
+                (rlist, wlist, xlist) = select.select(self.targets.keys(), [], [])
                 ready = [(x, None) for x in rlist]
         for one_ready in ready:
             target = self.targets.get(one_ready[0], None)
