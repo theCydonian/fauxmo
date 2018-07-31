@@ -462,7 +462,7 @@ while True:
         dbg(e)
         break
     except Exception as e:
-        print(e)
+        print("error ", e)
         GPIO.cleanup()
         dbg(e)
         break
