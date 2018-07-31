@@ -63,7 +63,7 @@ DEBUG = False
 def dbg(msg):
     global DEBUG
     if DEBUG:
-        print msg
+        print(msg)
         sys.stdout.flush()
 
 
