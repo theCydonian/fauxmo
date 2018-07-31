@@ -414,7 +414,7 @@ class gpio_handler(object):
 # ]
 
 FAUXMOS = [
-        ['Smart Candle', gpio_handler(4)]
+        ['Smart Candle', gpio_handler(7)]
     ]
 
 # FAUXMOS = [
