@@ -462,7 +462,10 @@ while True:
         dbg(e)
         break
     except Exception as e:
-        print("error ", e)
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
+        
         GPIO.cleanup()
         dbg(e)
         break
