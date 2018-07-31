@@ -388,12 +388,14 @@ class gpio_handler(object):
 
     def on(self):
         print(self.pin, "ON")
+        GPIO.output(self.pin, 1)
+        sleep(5)
         GPIO.output(self.pin, 0)
         return True
 
     def off(self):
         print(self.pin, "OFF")
-        GPIO.output(self.pin, 1)
+        GPIO.output(self.pin, 0)
         return True
 
 # Each entry is a list with the following elements:
@@ -412,8 +414,7 @@ class gpio_handler(object):
 # ]
 
 FAUXMOS = [
-        ['office lights', gpio_handler(35)],
-        ['kitchen lights', gpio_handler(37)],
+        ['Smart Candle', gpio_handler(4)]
     ]
 
 # FAUXMOS = [
