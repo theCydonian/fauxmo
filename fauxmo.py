@@ -35,6 +35,8 @@ import sys
 import time
 import urllib
 import uuid
+from gpiozero import LED
+from time import sleep
 
 
 
@@ -359,18 +361,19 @@ class upnp_broadcast_responder(object):
 # This example class takes two full URLs that should be requested when an on
 # and off command are invoked respectively. It ignores any return data.
 
-class rest_api_handler(object):
-    def __init__(self, on_cmd, off_cmd):
-        self.on_cmd = on_cmd
-        self.off_cmd = off_cmd
+class gpio_handler(object):
+    def __init__(self, gpioHeader):
+        led = LED(gpioHeader)
 
     def on(self):
-        r = requests.get(self.on_cmd)
-        return r.status_code == 200
+        led.on()
+        sleep(5)
+        led.off()
 
     def off(self):
-        r = requests.get(self.off_cmd)
-        return r.status_code == 200
+        led.on()
+        sleep(5)
+        led.off()
 
 
 # Each entry is a list with the following elements:
@@ -384,7 +387,7 @@ class rest_api_handler(object):
 # list will be used.
 
 FAUXMOS = [
-    ['Smart Candle', rest_api_handler('localhost:5200/ha-api?cmd=on&a=office', 'localhost:5300/ha-api?cmd=off&a=office')]
+    ['Smart Candle', gpio_handler(4)]
 ]
 
 
