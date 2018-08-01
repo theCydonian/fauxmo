@@ -31,8 +31,12 @@ import time
 import urllib
 import uuid
 import RPi.GPIO as GPIO
+import threading
 
-
+def onoff(pin):
+    GPIO.output(pin, 1)
+    sleep(5)
+    GPIO.output(pin, 0)
 
 # This XML is the minimum needed to define one of our virtual switches
 # to the Amazon Echo
@@ -388,12 +392,13 @@ class gpio_handler(object):
 
     def on(self):
         print(self.pin, "ON")
-        GPIO.output(self.pin, 0)
+        thr = threading.Thread(target=onoff, args=(self.pin), kwargs={})
+        thr.start()
         return True
 
     def off(self):
         print(self.pin, "OFF")
-        GPIO.output(self.pin, 1)
+        GPIO.output(self.pin, 0)
         return True
 
 # Each entry is a list with the following elements:
