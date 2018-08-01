@@ -31,16 +31,7 @@ import time
 import urllib
 import uuid
 import RPi.GPIO as GPIO
-import sys, os
-from multiprocessing import Pool
 
-GPIO.setwarnings(True)
-
-def onoff(pin):
-    GPIO.output(pin, 1)
-    sleep(5)
-    GPIO.output(pin, 0)
-    return True
 
 
 # This XML is the minimum needed to define one of our virtual switches
@@ -65,7 +56,7 @@ DEBUG = False
 def dbg(msg):
     global DEBUG
     if DEBUG:
-        print(msg)
+        print msg
         sys.stdout.flush()
 
 
@@ -305,17 +296,17 @@ class upnp_broadcast_responder(object):
 
             try:
                 self.ssock.bind(('',self.port))
-            except Exception as e:
+            except Exception, e:
                 dbg("WARNING: Failed to bind %s:%d: %s" , (self.ip,self.port,e))
                 ok = False
 
             try:
                 self.ssock.setsockopt(socket.IPPROTO_IP,socket.IP_ADD_MEMBERSHIP,self.mreq)
-            except Exception as e:
+            except Exception, e:
                 dbg('WARNING: Failed to join multicast group:',e)
                 ok = False
 
-        except Exception as e:
+        except Exception, e:
             dbg("Failed to initialize UPnP sockets:",e)
             return False
         if ok:
@@ -348,7 +339,7 @@ class upnp_broadcast_responder(object):
                 return self.ssock.recvfrom(size)
             else:
                 return False, False
-        except Exception as e:
+        except Exception, e:
             dbg(e)
             return False, False
 
@@ -397,13 +388,12 @@ class gpio_handler(object):
 
     def on(self):
         print(self.pin, "ON")
-        pool = Pool(processes=1)
-        pool.apply_async(onoff, [self.pin_number], callback)
+        GPIO.output(self.pin, 0)
         return True
 
     def off(self):
         print(self.pin, "OFF")
-        GPIO.output(self.pin, 0)
+        GPIO.output(self.pin, 1)
         return True
 
 # Each entry is a list with the following elements:
@@ -458,15 +448,7 @@ while True:
         # Allow time for a ctrl-c to stop the process
         p.poll(100)
         time.sleep(0.1)
-    except KeyboardInterrupt:
-        GPIO.cleanup()
-        dbg(e)
-        break
-    except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
-
+    except Exception, e:
         GPIO.cleanup()
         dbg(e)
         break
