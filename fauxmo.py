@@ -96,13 +96,13 @@ class poller:
             self.poller.unregister(fileno)
         del(self.targets[fileno])
 
-    def poll(self, timeout = 0):
+    def poll(self, timeout):
         if self.use_poll:
             ready = self.poller.poll(timeout)
         else:
             ready = []
             if len(self.targets) > 0:
-                (rlist, wlist, xlist) = select.select(self.targets.keys(), [], [])
+                (rlist, wlist, xlist) = select.select(self.targets.keys(), [], [], timeout)
                 ready = [(x, None) for x in rlist]
         for one_ready in ready:
             target = self.targets.get(one_ready[0], None)
