@@ -392,7 +392,7 @@ class gpio_handler(object):
 
     def on(self):
         print(self.pin, "ON")
-        thr = threading.Thread(target=onoff, args=(self.pin), kwargs={})
+        thr = threading.Thread(target=onoff, args=(self.pin,), kwargs={})
         thr.start()
         return True
 
