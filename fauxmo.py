@@ -96,7 +96,7 @@ class poller:
             self.poller.unregister(fileno)
         del(self.targets[fileno])
 
-    def poll(self, timeout):
+    def poll(self, timeout = 0.0):
         if self.use_poll:
             ready = self.poller.poll(timeout)
         else:
@@ -456,7 +456,7 @@ dbg("Entering main loop\n")
 while True:
     try:
         # Allow time for a ctrl-c to stop the process
-        p.poll(100)
+        p.poll(100.0)
         time.sleep(0.1)
     except KeyboardInterrupt:
         GPIO.cleanup()
