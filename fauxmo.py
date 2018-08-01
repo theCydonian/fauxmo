@@ -31,12 +31,11 @@ import time
 import urllib
 import uuid
 import RPi.GPIO as GPIO
-import asyncio
 import sys, os
+from multiprocessing import Pool
 
 GPIO.setwarnings(True)
 
-@asyncio.coroutine
 def onoff(pin):
     GPIO.output(pin, 1)
     sleep(5)
@@ -398,7 +397,8 @@ class gpio_handler(object):
 
     def on(self):
         print(self.pin, "ON")
-        asyncio.run(onoff(self.pin_number))
+        pool = Pool(processes=1)
+        pool.apply_async(onoff, [self.pin_number], callback)
         return True
 
     def off(self):
