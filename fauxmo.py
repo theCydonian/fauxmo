@@ -35,7 +35,7 @@ import threading
 
 def onoff(pin):
     GPIO.output(pin, 1)
-    sleep(5)
+    time.sleep(5)
     GPIO.output(pin, 0)
 
 # This XML is the minimum needed to define one of our virtual switches
